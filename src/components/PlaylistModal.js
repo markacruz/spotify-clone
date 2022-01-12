@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import SpotifyWebApi from 'spotify-web-api-node';
 
 const SpotifyApi = new SpotifyWebApi({
-    clientId: 'a285ec6b7c7a4435a388fa7d67092f84',
+    clientId: process.env.REACT_APP_CLIENT_ID,
 })
 
 const MODAL_STYLES = {
