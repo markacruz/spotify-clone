@@ -18,7 +18,7 @@ export default function useAuth(code) {
             window.history.pushState({}, null, "/")
           })
           .catch(() => {
-            window.location = "/"
+            window.location = "/spotify-clone"
           })
       }, [code])
 
@@ -33,7 +33,7 @@ export default function useAuth(code) {
             setExpiresIn(res.data.expiresIn)
           })
           .catch(() => {
-            window.location = "/"
+            window.location = "/spotify-clone"
           })
       }, (expiresIn - 60) * 1000)
 
