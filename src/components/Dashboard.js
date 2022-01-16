@@ -118,6 +118,7 @@ export default function Dashboard({ token }) {
                         src={getMe.images[0].url} 
                         className='object-none h-[225px] w-[225px] rounded-full' />
                     </div>
+                
                     <div className='flex flex-col'>
                         <div className='text-[85px] font-bold leading-[0.9em]'>
                             <a href={getMe.external_urls.spotify}>
@@ -136,6 +137,7 @@ export default function Dashboard({ token }) {
                         <div className='ml-[3px]'>
                         </div>
                     </div>
+
                 </div>
                 
                 <div className='h-[300px] w-[500px] bg-gray-700/[0.6] rounded-t-2xl'>
@@ -173,14 +175,11 @@ export default function Dashboard({ token }) {
                     <div className='h-auto'>
                         <Player accessToken={token} trackUri={playingTrack?.uri} />
                     </div>
-
-
                 </div>
-           
             </div>
 
             <div>
-                <hr className='mx-[15%] mb-8'/>
+                <hr className='mx-[15%] mb-8 mt-4'/>
             </div>
             
 
