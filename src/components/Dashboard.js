@@ -7,7 +7,7 @@ const SpotifyApi = new SpotifyWebApi({
     clientId: process.env.REACT_APP_CLIENT_ID,
 })
 
-export default function Dashboard(props) {
+export default function Dashboard({ token }) {
     
     const [getMe, setGetMe] = useState(null);
     const [userPlaylists, setUserPlayLists] = useState(null);
@@ -17,7 +17,7 @@ export default function Dashboard(props) {
     const [userTopTracks, setUserTopTracks] = useState(null);
     const [userTopArtists, setUserTopArtists] = useState(null);
 
-    const accessToken = useAuth(props.code);
+    const accessToken = token;
 
     useEffect(() => {
         if (!accessToken) return

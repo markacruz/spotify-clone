@@ -2,15 +2,20 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Sidebar from './components/Sidebar';
 
-const code = new URLSearchParams(window.location.search).get('code')
+const accessToken = window.location.hash.substring(1).split('&')[0].split('=')[1];
 
 function App() {
-  return code ? 
+
+  return (accessToken === null) ? 
+  <div>
+    <Login />
+  </div>
+  : 
   <div>
     <Sidebar />
-    <Dashboard code={code} /> 
+    <Dashboard token={accessToken} /> 
   </div>
-  : <Login />
+  
 }
 
 export default App;
