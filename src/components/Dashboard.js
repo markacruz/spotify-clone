@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import SpotifyWebApi from 'spotify-web-api-node';
 import useAuth from './useAuth';
 import PlaylistModal from './PlaylistModal';
+import TrackSearchResult from './TrackSearchResult';
+import Player from './Player'
+import axios from 'axios';
 
 const SpotifyApi = new SpotifyWebApi({
     clientId: process.env.REACT_APP_CLIENT_ID,
@@ -16,8 +19,27 @@ export default function Dashboard({ token }) {
     const [country, setCountry] = useState(null);
     const [userTopTracks, setUserTopTracks] = useState(null);
     const [userTopArtists, setUserTopArtists] = useState(null);
+    const [search, setSearch] = useState("");
+    const [searchResults, setSearchResults] = useState([])
+    const [playingTrack, setPlayingTrack] = useState()
+    const [lyrics, setLyrics] = useState("")
+
+
+    function chooseTrack(track) {
+        setPlayingTrack(track)
+        setSearch('')
+        setLyrics("")
+    }
 
     const accessToken = token;
+
+    // useEffect(() => {
+    //     if (!playingTrack) return
+
+    //     axios.get()
+
+
+    // }, [playingTrack])
 
     useEffect(() => {
         
@@ -26,7 +48,6 @@ export default function Dashboard({ token }) {
 
         SpotifyApi.getMe()
         .then((data) => {
-            console.log(data)
             setGetMe(data.body);
             setCountry(`https://flagcdn.com/16x12/${data.body.country.toLowerCase()}.png`);
             window.history.pushState({}, null, `/spotify-clone/`)
@@ -61,32 +82,53 @@ export default function Dashboard({ token }) {
         .then((data) => {
             let topArtists = data.body.items;
             setUserTopArtists(topArtists);
-            console.log(topArtists);
         }).catch((err) => {
         console.log('Something went wrong!', err);
         });
 
     }, [accessToken])
 
+    useEffect(() => {
+        if (!search) return setSearchResults([]);
+        
+        let cancel = false
+        SpotifyApi.searchTracks(search)
+        .then(res => {
+            if (cancel) return
+            setSearchResults(res.body.tracks.items.map(track => {
+                return {
+                    artist: track.artists[0].name,
+                    title: track.name,
+                    uri: track.uri,
+                    albumUrl: track.album.images[0].url
+                }
+            }))
+        })
+        return () => cancel = true
+    }, [search, accessToken])
+
     return (
         getMe !== null && userPlaylists !== null && recentlyPlayedTracks !== null && country !== null
         && userTopArtists !== null && userTopTracks !== null ? 
         <div className='ml-[70px]'>
-            <div className=''>
-                <div className='h-[40vh] flex justify-center items-center'>
-                    <div className='mr-10'>
+            <div className='flex justify-center items-center gap-x-10'>
+                <div className='h-[40vh] flex items-center'>
+                    <div className='mr-6'>
                         <img alt="Profile" 
                         src={getMe.images[0].url} 
                         className='object-none h-[225px] w-[225px] rounded-full' />
                     </div>
                     <div className='flex flex-col'>
-                        <div className='text-[90px] font-bold'>
+                        <div className='text-[85px] font-bold leading-[0.9em]'>
                             <a href={getMe.external_urls.spotify}>
                                 {getMe.display_name}
                             </a>
                         </div>
                         <div className='text-sm text-gray-500 ml-[3px]'>                    
                             {getMe.email}                         
+                        </div>
+                        <div className='text-sm text-gray-500 ml-[3px]'>                    
+                            {getMe.id}                         
                         </div>
                         <div className='ml-[3px]'>
                             {getMe.followers.total} Followers
@@ -95,6 +137,46 @@ export default function Dashboard({ token }) {
                         </div>
                     </div>
                 </div>
+                
+                <div className='h-[300px] w-[500px] bg-gray-700/[0.6] rounded-t-2xl'>
+                    <div className='bg-transparent font-bold text-xl pl-5 pt-2'>
+                        Spotify Web Player
+                    </div>
+
+                    <hr className='text-center mx-5 mt-2'/>
+
+                    <form className='bg-transparent mx-5 mt-2'>
+                        <input type="search"
+                        placeholder='Search Songs/Artists'
+                        className='bg-transparent outline-0 w-full' 
+                        value={search} 
+                        onChange={e => setSearch(e.target.value)}/>
+                    </form>
+                    
+                    <div className='bg-transparent w-[500px] max-h-[160px] overflow-y-scroll absolute scroll-smooth h-[160px]'>
+                        {searchResults.map(track => (
+                            <TrackSearchResult track={track} key={track.uri} chooseTrack={chooseTrack} />
+                        ))}
+                    </div>
+
+                    <div className='bg-transparent h-[175px]'>
+                        {searchResults.length === 0 && lyrics ? 
+                        <div className='bg-transparent'>
+                            Lyrics
+                        </div>
+                        : 
+                        <div className='text-center bg-transparent pt-[65px]'>
+                            No lyrics found...
+                        </div>}
+                    </div>
+
+                    <div className='h-auto'>
+                        <Player accessToken={token} trackUri={playingTrack?.uri} />
+                    </div>
+
+
+                </div>
+           
             </div>
 
             <div>
@@ -125,7 +207,7 @@ export default function Dashboard({ token }) {
                         playlistId={playlistId}
                         setPlaylistId={setPlaylistId} /> : null}
 
-                        <div className='max-h-[400px] overflow-y-scroll w-[400px] scroll-smooth	'>
+                        <div className='max-h-[400px] overflow-y-scroll scroll-smooth w-[400px]'>
                             <div className='ml-4'>
                                 {userPlaylists.map((playlist, index) => (
                                     <div key={playlist.id} 

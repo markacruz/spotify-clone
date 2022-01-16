@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import SpotifyLogo from '../logo.png'
 
-const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&response_type=token&redirect_uri=https://markacruz.github.io/spotify-clone&scope=ugc-image-upload%20user-read-private%20user-read-email%20user-follow-read%20user-library-read%20user-top-read%20user-read-recently-played%20playlist-read-collaborative%20playlist-read-private`
+const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&response_type=token&redirect_uri=https://markacruz.github.io/spotify-clone&scope=ugc-image-upload%20user-read-playback-state%20user-modify-playback-state%20user-read-currently-playing%20user-read-private%20user-read-email%20user-follow-modify%20user-follow-read%20user-library-modify%20user-library-read%20streaming%20app-remote-control%20user-read-playback-position%20user-top-read%20user-read-recently-played%20playlist-modify-private%20playlist-read-collaborative%20playlist-read-private%20playlist-modify-public`
 
 export default class Login extends Component {
 
