@@ -20,7 +20,7 @@ export default function Dashboard({ token }) {
     const accessToken = token;
 
     useEffect(() => {
-        window.history.pushState({}, null, "/")
+        window.history.pushState({}, null, "/spotify-clone")
         if (!accessToken) return
         SpotifyApi.setAccessToken(accessToken)
 
