@@ -20,14 +20,16 @@ export default function Dashboard({ token }) {
     const accessToken = token;
 
     useEffect(() => {
-        window.history.pushState({}, null, "/spotify-clone")
+        
         if (!accessToken) return
         SpotifyApi.setAccessToken(accessToken)
 
         SpotifyApi.getMe()
         .then((data) => {
+            console.log(data)
             setGetMe(data.body);
             setCountry(`https://flagcdn.com/16x12/${data.body.country.toLowerCase()}.png`);
+            window.history.pushState({}, null, `/spotify-clone/`)
 
             SpotifyApi.getUserPlaylists(data.body.id)
             .then((data) => {
@@ -78,18 +80,20 @@ export default function Dashboard({ token }) {
                         className='object-none h-[225px] w-[225px] rounded-full' />
                     </div>
                     <div className='flex flex-col'>
-                        <div className='text-[80px] font-bold'>
-                            {getMe.display_name}
+                        <div className='text-[90px] font-bold'>
+                            <a href={getMe.external_urls.spotify}>
+                                {getMe.display_name}
+                            </a>
                         </div>
-                        <div className='text-sm text-gray-500 ml-[3px]'>
-                            {getMe.email}
+                        <div className='text-sm text-gray-500 ml-[3px]'>                    
+                            {getMe.email}                         
                         </div>
                         <div className='ml-[3px]'>
                             {getMe.followers.total} Followers
                         </div>
+                        <div className='ml-[3px]'>
+                        </div>
                     </div>
-
-                    
                 </div>
             </div>
 
