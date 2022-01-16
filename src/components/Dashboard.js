@@ -20,6 +20,7 @@ export default function Dashboard({ token }) {
     const accessToken = token;
 
     useEffect(() => {
+        window.history.pushState({}, null, "/")
         if (!accessToken) return
         SpotifyApi.setAccessToken(accessToken)
 
