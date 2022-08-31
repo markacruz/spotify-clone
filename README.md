@@ -1,5 +1,7 @@
 # Spotify Clone
 
+Made with React, Tailwind, and Spotify Web API
+
 ## 1. Log In Page
 
 ![alt text](img/Image1.png)
